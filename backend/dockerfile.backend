@@ -1,0 +1,102 @@
+# syntax=docker/dockerfile:1
+
+# Use the specified Python version
+ARG PYTHON_VERSION=3.12.6
+FROM --platform=linux/amd64 python:${PYTHON_VERSION}-slim AS base
+
+# Install necessary build dependencies and unixODBC
+RUN apt-get update && \
+    apt-get install -y gcc python3-dev pkg-config libhdf5-dev default-libmysqlclient-dev \
+        unixodbc unixodbc-dev unzip odbcinst curl gnupg lsb-release sudo apt-transport-https ca-certificates libtool m4 libaio1 libaio-dev \
+        openssl wget netcat-openbsd libncurses5 libtinfo5 libnsl2 && \
+    apt-get clean
+
+#### MICROSOFT SUPPORT ####
+# Install the Microsoft ODBC driver and SQL tools
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools18 unixodbc-dev && \
+    echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> /etc/profile.d/mssql-tools.sh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Oracle 21c Basic + ODBC packages
+RUN mkdir -p /opt/oracle && \
+    cd /opt/oracle && \
+    # Download Basic Package
+    curl -O -L -H "Cookie: oraclelicense=accept-securebackup-cookie" \
+    https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip && \
+    # Download ODBC Package
+    curl -O -L -H "Cookie: oraclelicense=accept-securebackup-cookie" \
+    https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-odbc-linux.x64-21.6.0.0.0dbru.zip && \
+    # Extract both
+    unzip instantclient-basic-linux.x64-21.6.0.0.0dbru.zip && \
+    unzip instantclient-odbc-linux.x64-21.6.0.0.0dbru.zip && \
+    # Cleanup
+    rm -f *.zip && \
+    chmod -R 755 /opt/oracle/instantclient_21_6
+
+# Set permissions before switching users
+RUN chmod 755 /opt/oracle/instantclient_21_6/libsqora.so.21.1 && \
+    chmod +x /opt/oracle/instantclient_21_6/*
+
+# Configure environment variables
+ENV ORACLE_HOME=/opt/oracle/instantclient_21_6
+ENV LD_LIBRARY_PATH=${ORACLE_HOME}:${LD_LIBRARY_PATH}
+ENV PATH=${ORACLE_HOME}:${PATH}
+
+# Configure ODBC drivers (Oracle + Microsoft)
+RUN echo "[Oracle]" > /etc/odbcinst.ini && \
+    echo "Description=Oracle ODBC Driver" >> /etc/odbcinst.ini && \
+    echo "Driver=${ORACLE_HOME}/libsqora.so.21.1" >> /etc/odbcinst.ini && \
+    echo "FileUsage=1" >> /etc/odbcinst.ini && \
+    echo "" >> /etc/odbcinst.ini && \
+    echo "[ODBC Driver 18 for SQL Server]" >> /etc/odbcinst.ini && \
+    echo "Description=Microsoft ODBC Driver 18 for SQL Server" >> /etc/odbcinst.ini && \
+    echo "Driver=/opt/microsoft/msodbcsql18/lib64/libmsodbcsql-18.4.so.1.1" >> /etc/odbcinst.ini
+
+# Update ldconfig
+RUN echo "${ORACLE_HOME}" > /etc/ld.so.conf.d/oracle.conf && ldconfig
+
+RUN ls -l /opt/oracle/instantclient_21_6/libsqora.so.21.1
+
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED=1
+
+# Set the working directory
+WORKDIR /backend
+
+# Change ownership of the /backend
+RUN chmod -R 755 /backend
+
+# Copy necessary files to the working directory
+COPY ./requirements.txt /backend/
+COPY ./setup.py /backend/
+COPY ./readme.md /backend/
+
+# Upgrade pip and install project dependencies
+RUN pip install --upgrade pip
+RUN pip install .
+
+COPY ./.env /backend/.env
+
+# Copy the application code to the working directory
+COPY ./ /backend
+
+RUN mkdir -p /backend/logs && \
+    chmod 755 /backend && \
+    chmod 777 /backend/logs
+
+    # Define environment variables
+ENV HOST="0.0.0.0"
+ENV PORT=8000
+
+# Expose the specified port
+EXPOSE ${PORT}
+
+# Set the entry point for the container
+ENTRYPOINT uvicorn app.app:app --host ${HOST} --port ${PORT}

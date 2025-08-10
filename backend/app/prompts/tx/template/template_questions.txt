@@ -1,0 +1,112 @@
+Table Name: oshistory_detail
+1.	What is the average CPU usage over the last week?
+2.	How many active TCP connections were there during peak hours on the server?
+3.	What is the maximum memory usage recorded in the past month?
+4.	How many processes were running when the system load was highest?
+5.	What percentage of CPU time was spent on user-level processes compared to system-level processes?
+6.	What was the average length of the process queue during the last monitoring session?
+7.	What is the current state of disk transfers during high memory usage?
+8.	How does the swap memory usage correlate with the physical memory free during the last session?
+9.	Can you provide the timestamps for sessions where CPU usage exceeded 90%?
+10.	Is the server running on a Windows operating system, and how does this affect its performance metrics?
+
+Table Name: business_txn_avg
+1.	What is the total number of transactions recorded during the last month?
+2.	How has the average response time changed over the last week?
+3.	What percentage of transactions were successful during the last monitoring period?
+4.	How many servers were operational versus down during peak transaction hours?
+5.	What is the average CPU usage across all servers during periods of high transaction volume?
+6.	How many HTTP errors were encountered, and what types of errors were most common?
+7.	What is the transaction throughput during the busiest hour of the day?
+8.	Can you provide the details of servers that experienced slow performance during the last month?
+9.	What were the total SQL-related errors recorded during the last quarter?
+10.	How does the physical memory usage correlate with transaction counts over the past week?
+
+Table Name: intellitrace_errors
+1.	What are the most common error types encountered in the application over the last month?
+2.	Can you provide a summary of errors by server name for the past week?
+3.	How many times has a specific error occurred, and what is the detailed reason for those occurrences?
+4.	What was the distribution of errors by client identifier during the last reporting period?
+5.	Can you show the timestamps of the most recent errors along with their associated stack traces?
+6.	What are the most frequent error codes, and how do they correlate with the server load at those times?
+7.	How many unique errors have been recorded for each server over the past quarter?
+8.	What is the average number of exceptions per server during peak hours?
+9.	Can you list the IP addresses associated with the highest number of errors?
+10.	What specific errors are most often associated with SQL state codes, and what database operations do they relate to?
+
+Table Name: monitor_data
+1.	What is the average CPU usage percentage across all servers for the past month?
+2.	How many errors were encountered during peak hours last week, and on which server did they occur?
+3.	Can you provide the average response time and throughput for each application over the last quarter?
+4.	What is the trend of heap memory usage over the last three months, including both used and free memory?
+5.	How many processes were waiting for execution during the last monitoring session, and what was the queue size?
+6.	Can you identify the servers with the highest errors count and their corresponding session timestamps?
+7.	What is the relationship between throughput and average response time for the past six months?
+8.	What are the maximum heap memory limits set for each server, and how close did they get to these limits during the last monitoring period?
+9.	Can you summarize the monitoring data by server name, highlighting the average waiters count?
+10.	What are the timeframes with the highest CPU usage, and how do they correlate with errors encountered?
+
+Table: process_details
+1.	What are the names of the processes currently running on my server?
+2.	How much disk space is being read or written by each process?
+3.	Which processes are taking up the most CPU time?
+4.	Can you show me the total number of I/O operations performed by all processes?
+5.	What is the average priority level of processes running on the server?
+6.	How many threads are associated with a specific process?
+7.	What user initiated the most resource-intensive processes?
+8.	When was the last time I collected details about running processes?
+9.	Are there any processes that are consuming an unusually high amount of memory?
+10.	Can you tell me which process has been running the longest on the server?
+
+Table: server_details
+1.	What is the hostname of the server?
+2.	Can you provide the IP address of the server?
+3.	What operating system is running on this server?
+4.	What version of the operating system is installed on the server?
+5.	When was the server last booted?
+6.	What is the total amount of RAM memory available on the server?
+7.	How many CPU cores does the server have?
+8.	What is the maximum clock speed of the CPU?
+9.	What is the vendor of the server hardware?
+10.	Is this server a physical machine, virtual machine, or cloud-based system?
+11.	What time zone is the server configured to use?
+12.	Can you show me the system information, including hardware specifications?
+13.	How many logical processors are available on the server?
+14.	What are the network configuration details for the server?
+
+Table: txn
+1.	What is the unique identifier for this transaction?
+2.	Which client is associated with this transaction?
+3.	What is the name of the server that processed this transaction?
+4.	When did this transaction start?
+5.	How long did this transaction take to complete?
+6.	Was this transaction successful?
+7.	Did this transaction meet the maximum service-level agreement (SLA) requirements?
+8.	Is there trace data available for this transaction?
+9.	Was this transaction marked as slow?
+10.	What IP address originated this transaction?
+
+Table: slow_txn
+1.	What is the unique identifier for this slow transaction?
+2.	Which client is associated with this slow transaction?
+3.	What is the name of the server that processed this slow transaction?
+4.	What is the name of the transaction or process that is marked as slow?
+5.	When did this slow transaction start?
+6.	Is this transaction marked as slow?
+7.	How many times has this transaction failed?
+8.	How many alerts have been triggered for this slow transaction?
+9.	Is there any action taken on this slow transaction to improve performance?
+10.	What measures are in place to monitor slow transactions?
+
+Table: http_errors
+1.	When did the HTTP error occur?
+2.	Which server processed the request that resulted in the HTTP error?
+3.	What is the error message or exception details related to this HTTP error?
+4.	What URI was requested when the error occurred?
+5.	What is the unique identifier for this HTTP error record?
+6.	What is the IP address of the client that made the request that led to the error?
+7.	What is the HTTP status code associated with this error?
+8.	Which specific server logged this HTTP error?
+9.	How frequently do these HTTP errors occur on this server?
+10.	Are there any patterns in the URIs that are leading to HTTP errors?
+

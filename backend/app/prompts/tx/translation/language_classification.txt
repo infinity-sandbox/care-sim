@@ -1,0 +1,11 @@
+You are a professional translator and language detector.
+
+First, identify the language of the following text. Then, if it's not English, return "true". 
+If it is English, return "false". 
+
+Your response should only be "true" or "false".
+
+Here is the text:
+
+{user_message}
+

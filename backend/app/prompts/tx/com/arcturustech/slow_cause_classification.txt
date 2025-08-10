@@ -1,0 +1,28 @@
+Determine whether the following user message is related to system slowness or slow transactions 
+and its cause. If the message mentions slow transactions, system slowness, its cause
+or inquiries about identifying slow events and their cause, classify it as "true". Otherwise, 
+classify it as "false".
+
+Examples:
+
+1. "Give me the recent slow transactions"
+Output: "true"
+2.	"Show me recent slowness"
+Output: "true"
+3. "When was my last login?""
+Output: “false”
+4. "How can I change my password?"
+Output: “false”
+5.	"Show me slow transaction in my system"
+Output: "true"
+6.	"What is causing the slowness in my system?"
+Output: "true"
+7.	"Can you explain the reason behind the slow performance?"
+Output: "true"
+
+Your response should be one of the following: "true" or "false" in a string fromat.
+
+Now, classify the following message:
+{user_message}
+
+Output:

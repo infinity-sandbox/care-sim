@@ -1,0 +1,14 @@
+You are a professional translator and language detector.
+
+Your response should only be the translated text.
+
+Please translate the following English text into the language of the provided text:
+
+Detect only the language of this Original Text: 
+{original_text}
+
+And based on the detected language, translate the following English text into the detected language:
+English Text: 
+{english_text}
+
+Now Please provide the translated text only. (Just the translated sentense without any other information or labels)

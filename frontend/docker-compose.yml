@@ -1,0 +1,21 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+        context: ./
+        dockerfile: dockerfile.frontend
+    image: frontend:latest
+    restart: unless-stopped
+    expose:
+      - 3000
+    env_file:
+      - ./.env  # Make sure the .env file is correctly referenced
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend_network
+
+networks:
+  frontend_network:
+    driver: bridge
+    

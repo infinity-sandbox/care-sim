@@ -1,0 +1,190 @@
+Extract the following parameters from the given text:
+
+1. `PD` (type: string): Represents the type of service, either "OPD" or "IPD".
+2. `FIELDNAME` (type: string): Must match exactly one of the field names listed below.
+3. `REGISTRATIONNO` (type: integer): The unique patient registration number.
+
+### FIELDNAME Matching Rules:
+- `FIELDNAME` must be an exact match with one of the values listed below. 
+- If a partial match is found in the input (e.g., "Hb" or "Semen Analysis sperm count"), map it to the closest field name from the list.
+- If no match can be made, the `FIELDNAME` should be returned as an empty string (`""`).
+
+Allowed Field Names:
+
+- .Bleeding Time  (BT)1                                                                               
+- 24 Hour Urine Total Volume                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+- LDH (Fluid)                                              
+- Urine Chloride (Spot)                                                                                              
+- Urine Potassium (Spot)                                                                                                                                                    
+- 25 HYDROXY VITAMIN D-TOTAL                                                                          
+- Absolute Basophil Count                                                                             
+- Absolute Eosinophil Count (AEC)                                                                     
+- Absolute Lymphocyte Count                                                                           
+- Absolute Monocyte Count                                                                             
+- Absolute Neutrophil Count (ANC)                                                                     
+- Acetone Qualitative                                                                                 
+- Activtd.Partial Thromboplastin Time (APTT) Control                                                  
+- Actvtd.Partial Thromboplastin Time (APTT) Patient                                                   
+- age                                                                                                 
+- Albumin                                                                                             
+- Alkaline Phosphatase                                                                                
+- ALPHA-FETOPROTEIN(AFP) TUMOR MARKER                                                                 
+- Ammonia (Plasma)*                                                                                   
+- Amylase                                                                                             
+- Amylase (Fluid)                                                                                     
+- ANTI CYCLIC CITRULLINATED PEPTIDE (ANTI CCP)                                                        
+- Anti Mullerian Hormone (AMH)                                                                        
+- ANTI THYROGLOBULIN (ANTI-TG)                                                                        
+- ANTI THYROID PROXIDASE                                                                              
+- Anti Thyroid Proxidase*                                                                             
+- Antibody to Hepatitis C Virus                                                                       
+- Antibody to HIV 1 & 2, p24 Antigen                                                                  
+- Ascitic/Peritoneal Albumin                                                                          
+- Ascitic/Peritoneal Fluid for Glucose                                                                
+- Atypical Cells                                                                                      
+- BETA HCG (CANCER MARKER)                                                                            
+- Bilirubin Conjugated (Bc)                                                                           
+- Bilirubin Total (TBil) Numeric                                                                      
+- Bilirubin Unconjugated (Bu)                                                                         
+- Bleeding Time  (BT)                                                                                 
+- Blood Sugar (1 Hr.)                                                                                 
+- Blood Sugar (2 Hrs.)                                                                                
+- Blood Sugar (Fasting)                                                                               
+- BUN - Blood Urea Nitrogen                                                                           
+- CA 125                                                                                              
+- Calcium                                                                                             
+- CEA                                                                                                 
+- Chloride                                                                                            
+- Chloride (Serum/Plasma)                                                                             
+- Cholesterol-Total                                                                                   
+- CK / CPK (Creatine Kinase)                                                                          
+- CKMB                                                                                                
+- CORTISOL (AM)                                                                                       
+- CORTISOL (PM)                                                                                       
+- CORTISOL (RANDOM)                                                                                   
+- Creatinine                                                                                          
+- CREATININE KINASE MB MASS                                                                           
+- CRP - C Reactive Protein                                                                            
+- CSF Differential Count- Lymphocytes                                                                 
+- CSF Differential Count- Neutrophils                                                                 
+- CSF for Glucose                                                                                     
+- CSF for Protein                                                                                     
+- D- Dimer                                                                                            
+- DLC - Band Cells                                                                                    
+- DLC - Basophils                                                                                     
+- DLC - Blasts                                                                                        
+- DLC - Eosinophils                                                                                   
+- DLC - Lymphocytes                                                                                   
+- DLC - Metamyelocytes                                                                                
+- DLC - Monocytes                                                                                     
+- DLC - Myelocytes                                                                                    
+- DLC - Neutrophils                                                                                   
+- DLC - Promyelocytes                                                                                 
+- dTIBC                                                                                               
+- ESR (Erythrocyte Sed.Rate)                                                                          
+- Estradiol (E2)                                                                                      
+- FDP  (Fibrin Degradation Product)                                                                   
+- Ferritin                                                                                            
+- Ferritin - Covid                                                                                    
+- Fluid for Glucose                                                                                   
+- Fluid for Protein                                                                                   
+- Fluid Volume                                                                                        
+- FSH- Follicle Stimulating Hormone*                                                                  
+- FT3 - Free T3                                                                                       
+- FT4 - Free T4                                                                                       
+- G - 6 PD DEFICIENCY TEST *                                                                          
+- GGTP (GAMMA GT)                                                                                     
+- Glucose (2 Hour Post Prandial)                                                                      
+- Glucose (Fasting Blood Sugar / FBS)                                                                 
+- Glucose (RBS/Random Blood Sugar)                                                                    
+- GLUCOSE CHALLENGE TEST (GCT)                                                                        
+- Haemoglobin Estimation (Hb)                                                                         
+- HBA1C - Glycosylated Hemoglobin                                                                     
+- HCG - BETA SPECIFIC                                                                                 
+- HDL CHOLESTEROL                                                                                     
+- HEM                                                                                                 
+- Hepatitis A Virus (Anti-HAV IgM)                                                                    
+- Hepatitis B surface Antigen                                                                         
+- HEPATITIS B VIRUS SURFACE ANTIBODY QUANT                                                           
+- Hepatitis E Virus Anti-HEV IgM                                                              
+- Iron                                                                                                
+- LDH                                                                                                 
+- LH- Leutenizing Hormone                                                                             
+- Lipase                                                                                              
+- Magnesium                                                                                           
+- Mantoux Test                                                                                        
+- MCH                                                                                                 
+- MCHC                                                                                                
+- MCV                                                                                                 
+- New123                                                                                              
+- NT-proBNP*                                                                                          
+- PCV (Haematocrit)                                                                                   
+- Peritoneal Fluid - Diff. Count, Lymphocytes                                                         
+- Peritoneal Fluid - Diff. Count, Neutrophills                                                        
+- Phosphorus                                                                                          
+- Platelet Count                                                                                      
+- Pleural Fluid - Diff. Count, Lymphocytes                                                            
+- Pleural Fluid - Diff. Count, Neutorphils                                                            
+- Pleural Fluid for Glucose                                                                           
+- Pleural Fluid for LDH                                                                               
+- Pleural Fluid for Protein                                                                           
+- Potassium                                                                                           
+- Procalcitonin(PCT),Quantitavie                                                                      
+- Prolactin                                                                                           
+- Protein Total                                                                                       
+- Prothrombin Time (PT) Control                                                                       
+- Prothrombin Time (PT) INR Value                                                                     
+- Prothrombin Time (PT) Ratio                                                                         
+- Prothrombin Time Patient Value                                                                      
+- PSA Total (Prostate Specific Antigen)                                                               
+- PTH - INTACT                                                                                        
+- RBC Count (Red Blood Cell)                                                                          
+- RDW                                                                                                 
+- Reticulocyte Count                                                                                  
+- Semen Analysis - Morphology, Abnormal                                                               
+- Semen Analysis - Morphology, Normal                                                                 
+- Semen Analysis - Motility, Active                                                                   
+- Semen Analysis - Motility, Active.                                                                  
+- Semen Analysis - Motility, Non-motile                                                               
+- Semen Analysis - Motility, Sluggish                                                                 
+- Semen Analysis - Motility, Sluggish.                                                                
+- Semen Analysis - Total Sperm Count                                                                  
+- Semen Analysis - Volume                                                                             
+- Semen Analysis -Percentage Motility ( Grade A + B                                                   
+- Semen Analysis Post wash-Non-Motile                                                                 
+- Semen Analysis post wash-Total Sperm Count                                                          
+- serum creatnine                                                                                     
+- SERUM PROGESTERONE                                                                                  
+- SGOT (AST)                                                                                          
+- SGPT (ALT)                                                                                          
+- Sodium                                                                                              
+- test Himanshu                                                                                       
+- Test123                                                                                             
+- Testosterone, Total                                                                                 
+- TLC                                                                                                 
+- Total IgE                                                                                           
+- Total Leukocyte Count (TLC)                                                                         
+- Triglycerides                                                                                       
+- Troponin-I (Quantitative)                                                                           
+- TSH-Thyroid Stimulating Hormone                                                                     
+- UREA                                                                                                
+- Uric Acid                                                                                           
+- Urine Analysis - pH                                                                                 
+- Urine Analysis - Quantity                                                                           
+- Urine Analysis - Specific Gravity                                                                   
+- Urine Creatinine                                                                                    
+- Urine Creatinine.                                                                                   
+- Urine Microalbumin(n)                                                                               
+- Urine Protein                                                                                       
+- Urine Sodium (Spot)                                                                                 
+- Vitamin B12 
+
+### Output Format:
+Return the extracted parameters as a JSON object with the following keys:
+- `"PD"`: (string) e.g., `"OPD"`
+- `"FIELDNAME"`: (string) e.g., `"Hb"`
+- `"REGISTRATIONNO"`: (integer) e.g., `300708712`
+
+Input: {user_message}
+
+Output:

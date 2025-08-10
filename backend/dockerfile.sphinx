@@ -1,0 +1,30 @@
+# Use the specified Python version
+ARG PYTHON_VERSION=3.12.6
+FROM python:${PYTHON_VERSION}-slim as base
+
+# Install build dependencies including make
+RUN apt-get update && apt-get install -y make && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install Sphinx and any necessary extensions
+RUN pip install --no-cache-dir sphinx sphinx_rtd_theme
+
+# Copy the entire local directory to the container
+COPY ./ /app/
+
+# Check if the build directory exists inside the container; if not, create it
+RUN [ ! -d ./docs/build ] && mkdir -p ./docs/build || echo "Build directory already exists"
+
+# Generate API documentation
+RUN sphinx-apidoc -o ./docs/source .
+
+# Build the Sphinx documentation inside the container
+RUN cd ./docs && make html
+
+# Expose a port for the documentation (changed to 8080)
+EXPOSE 8080
+
+# Start a simple HTTP server to serve the documentation inside the container
+CMD ["python", "-m", "http.server", "8080", "--directory", "./docs/build/html"]
