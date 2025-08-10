@@ -101,9 +101,9 @@ const Login: React.FC = () => {
             </Form.Item>
             <div className='PasswordText'>
               <div>Password</div>
-              {/* <div className="forgot-link">
+              <div className="forgot-link">
                 <Link to="/forgot/password">Forgot?</Link>
-              </div> */}
+              </div>
             </div>
             <Form.Item className='passwordInput'
               name="password"
@@ -126,10 +126,10 @@ const Login: React.FC = () => {
                 {loading ? <Spin /> : 'Login Now'}
               </Button>
             </Form.Item>
-            {/* <div className="signup-link">
+            <div className="signup-link">
               <span>Don't have an account?</span>{" "}
               <Link to="/Register">Register</Link>
-            </div> */}
+            </div>
           </Form>
         </div>
       </div>

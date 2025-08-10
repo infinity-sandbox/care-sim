@@ -5,8 +5,10 @@
     flex: 1;
     height: auto; /* Adjust if necessary */
     width: auto;  /* Adjust if necessary */
+    /* background: #1591ea;  */
     background: #1591ea; 
-    background-image: url(../images/arcturus.svg);
+    background-image: 
+        url(../images/daycarefinal.svg);
     background-repeat: no-repeat;
     background-size: contain; /* Ensure the whole image is visible */
     background-position: center; /* Center the image in the container */

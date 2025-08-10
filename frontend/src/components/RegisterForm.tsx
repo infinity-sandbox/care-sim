@@ -52,7 +52,8 @@ const Register: React.FC = () => {
 
           <Form.Item
             name="email"
-            rules={[{ required: true, message: 'Please enter your email address.' }, { type: 'email', message: 'The input is not valid E-mail!' }]}
+            rules={[{ required: true, message: 'Please enter your email address.' }, 
+              { type: 'email', message: 'The input is not valid E-mail!' }]}
           >
             <Input
               prefix={<MailOutlined />}
