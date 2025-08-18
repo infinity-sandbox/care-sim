@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Login from './components/Login';
 import ForgotPassword from './components/forgetLink/forgetLinkPage';
@@ -6,15 +6,31 @@ import PasswordResetPage from './components/forgetLink/emailRedirectedPage';
 import SuccessRegistrationPage from './components/statusPages/successRegistrationPage';
 import PrivateRoute from './components/PrivateRoute';
 import Register from './components/RegisterForm';
-import Layout from './components/Layout';
-import Home from './components/Home';
-import Chatbot from './components/Chatbot';
-import Dashboard from './components/Dashboard';
-import ForecastLoop from './components/ForecastLoop'; 
+// import Chatbot from './components/Chatbot';
 import './App.css';
+import DaycareSimulator from './components/DaycareSimulator';
+import { SimulatorProvider } from './contexts/SimulatorContext';
+import { getUserData } from './services/api';
+import './App.css';
+import './styles/simulator.css';
+import './styles/responsive.css';
+
 
 function App() {
-  const [message, setMessage] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState('');
+  useEffect(() => {
+    // Fetch user data on app load
+    const fetchUserData = async () => {
+      try {
+        const userData = await getUserData();
+        setUserEmail(userData.email);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    
+    fetchUserData();
+  }, []);
 
   return (
     <BrowserRouter>
@@ -25,19 +41,13 @@ function App() {
         <Route path='/reset/password' element={<PasswordResetPage />} />
         <Route path='/success/registration' element={<SuccessRegistrationPage />} />
         <Route path='/register' element={<Register />} />
-        <Route element={<Layout />}> {/* Wrap routes with Layout */}
-          {/* Add ForecastLoop inside PrivateRoute to activate it on these pages */}
-          {/* <Route path="/home" element={
-            <PrivateRoute>
-              <>
-                <ForecastLoop setMessage={setMessage} />
-                <Home message={message} />
-              </>
-            </PrivateRoute>
-          } /> */}
-          <Route path="/chatbot" element={<PrivateRoute><Chatbot /></PrivateRoute>} />
-          {/* <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} /> */}
-        </Route>
+        <Route path="/simulator" element={
+          <PrivateRoute>
+            <SimulatorProvider email={userEmail}>
+              <DaycareSimulator />
+            </SimulatorProvider>
+          </PrivateRoute>
+        } />  
       </Routes>
     </BrowserRouter>
   );

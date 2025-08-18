@@ -24,7 +24,7 @@ class UserService:
             # Email details
             sender_email = logger_settings.MY_EMAIL
             receiver_email = email
-            subject = "PASSWORD RESET LINK REQUEST: Applicare AI"
+            subject = "PASSWORD RESET LINK REQUEST: care sim"
             body = f"Password Reset Link:\n{reset_link}"
 
             # Create the email message

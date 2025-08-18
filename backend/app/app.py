@@ -111,11 +111,11 @@ def mount_static_files(app, vite_dist_dir):
 
 # Serve frontend
 async def serve_frontend(index_html_path):
-    if os.path.exists(index_html_path):
-        return FileResponse(index_html_path)
+    # if os.path.exists(index_html_path):
+    #     return FileResponse(index_html_path)
     return JSONResponse(
             content={
-                "message": "applicare backend api. welcome to the jungle!"
+                "message": "care simulator backend api. welcome to the jungle!"
             },
             status_code=404
         )
@@ -150,8 +150,9 @@ async def auth_db_startup():
         logger.error("Failed to connect to the database!")
         raise RuntimeError("Database connection failed.")
     
-    await AuthDatabaseService.ensure_env_table_exists()
-    await AuthDatabaseService.ensure_cache_schema_exists()
+    # await AuthDatabaseService.ensure_env_table_exists()
+    # await AuthDatabaseService.ensure_cache_schema_exists()
+    await AuthDatabaseService.ensure_auth_table_exists()
 
     logger.info("Successfully connected to the authentication database.")
         
@@ -221,18 +222,19 @@ def run_app():
     @app.on_event("startup")
     async def on_startup():
         logger.info("Starting up...")
-        redis_clt = await redis_client_support()
+        # redis_clt = await redis_client_support()
         await asyncio.gather(
-            redis_startup(redis_clt),
-            auth_db_startup()
+            # redis_startup(redis_clt),
+            auth_db_startup(),
+            AuthDatabaseService.ensure_user_input_insight_tables_exists()
         )
         
     @app.on_event("shutdown")
     async def on_shutdown():
         logger.info("Shutting down...")
-        redis_clt = await redis_client_support()
+        # redis_clt = await redis_client_support()
         await asyncio.gather(
-            redis_shutdown(redis_clt),
+            # redis_shutdown(redis_clt),
             auth_db_shutdown()
         )
     return app

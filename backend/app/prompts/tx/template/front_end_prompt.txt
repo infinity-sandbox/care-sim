@@ -1,0 +1,299 @@
+I am building a day care center ai simulator page where a client (the day care center) can fill out the steps
+(forms) to get insight from llm day-care about their finances, how many people they can hire, and other things.
+i am using react with typescript and antd for design.
+
+the front end has accent color of blue and background color of white.
+what i want you to do is to create a react page that has a form with multiple steps
+that will collect information from the user and then send it to the backend to get insight from llm day-care.
+so the final result is a dashboard from the llm that can show Insights
+also i want to use axios as the http client to send and recive data so put a sample axios call to the backend to get the insights.
+but for now you can just put a placeholder for the axios call. (and you can use dummy data for now but comment on it that what i should place a data from the axios endpoint so that i can replace it latter)
+I want the full code (don't say you can finish it at random place), I want the full functionality.
+It should be responsive and work well on both desktop and mobile devices.
+
+so when building the frontend you should know and use what kinds of data i am expecting from the backend and what kind of data i will send to the backend. (that's how to build the frontend and backend together) (basicly the data must be a structured json response).
+
+
+all files must be in there respective folder and file names (css files in styles/ folder, components in components/ folder, etc.). make it all structured and organized.
+
+
+this is my already started folder structure that i have built and i am buildinig this from this standpoint:
+- login page (after the login it should land on the welcome page)
+
+the form should have the following fields:
+
+this should be included:
+- the front end has accent color of blue and background color of white.
+- a welcome message that describes the application (at the start of the page) then it will land
+on the form page with steps 
+- the form should have multiple steps to collect information from the user
+- the form should have a save button and a next button (when i hit back it will show the saved data: you can save this in the frontend side)
+- the form should have a hidden side bar with logout option (at the right top cornor which has the first letter of the email loged in(you can put endpoint to give you this))
+- make it proffesional and usable in real world our there for deployment
+- make it elegant and beautiful with nice fonts and orders
+- will have buttons to add more if the client has more info to put
+- and it must have info pop out on each section to descript what they can fill there
+- and finally it should have insight button after step 1 is finished and insight will load and wait for llm response
+
+
+
+so my boss send me a sample frontend, I will copy the lables from the image only the texts of the filed and steps (so it might be some how the text and lables might not be organized since i copied the raw text from the image so try to understand it)
+
+
+个 Back
+Center Operations Simulator
+Simulate cash flow, budgeting, staffing, and financial events
+Ad Placeholder simulator-banner
+970x90
+Inputs
+Operational & Financial Data Entry
+Insights
+Results after simulation
+Next Steps|
+Personalized checklist after review
+Business Information
+Business Name (Optional)
+Demo Daycare Center
+Revenue Sources ®
+Source Name
+
+Tuition
+
+Source Name
+
+Application Fees
+
+Source Name
+
+Early Drop-Off
+
+Source Name
+
+Late Pick-Up
+
+Monthly Amount
+Tag/Note
+Monthly Amount
+Tag/Note
+Monthly Amount
+Tag/Note
+Monthly Amount
+Tag/Note
++ Add Other Revenue Source
+
+
+
+
+Inputs
+Operational & Financial Data Entry
+Insights
+Results after simulation
+Next Steps
+Personalized checklist after review
+Expenses ®
+Employees ®
+Expense Name
+Director
+Expense Name
+Teacher
+Expense Name
+Assistant Teacher
+Monthly Amount
+Hourly Rate
+Hourly Rate
++ Add Other Role
+Facilities ®
+
+Expense Name
+
+Rent
+
+Expense Name
+
+Utilities
+
+Expense Name
+
+Insurance
+
+Expense Name
+
+Taxes
+
+Monthly Amount
+Monthly Amount
+Monthly Amount
+Monthly Amount
++ Add Other Cost
+Administrative ®
+Hours/Month
+Hours/Month
+Hours/Month
+Type
+Type
+Type
+Type
+Monthly
+Monthly
+Monthly
+Monthly
+Type
+Type
+Type
+Monthly
+Hourly
+Hourly
+
+
+
+
+Inputs
+Operational & Financial Data Entry
+Administrative
+Insights
+Results after simulation
+Next Steps
+Personalized checklist after review |
+Expense Name
+Software
+
+Expense Name
+
+Supplies
+
+Expense Name
+
+Marketing
+
+Expense Name
+
+Miscellaneous
+
+Monthly Amount
+Monthly Amount
+Monthly Amount
+Monthly Amount
++ Add Other Cost
+Supplies ®
+Expense Name
+
+Food
+
+Expense Name
+
+Diapers/Wipes
+
+Expense Name
+
+Cleaning Supplies
+
+Expense Name
+
+Other
+
+Monthly Amount|
+Monthly Amount
+Monthly Amount
+Monthly Amount|
++ Add Other Cost
+Classroom & Operational Details
+Type
+Type
+Type
+Type
+Monthly
+Monthly
+Monthly
+Monthly
+Type
+Monthly
+Type
+Monthly
+Type
+Monthly
+Type
+Monthly
+
+
+
+Operational & Financial Data Entry
+Insights
+Rasta after simalation
+Pursoralued checklat after nevima
+Wontound
+Diapers/Wipes
+Expense Name
+Clearing Supplies
+Monthly Amount
+Wontound
+
+Type
+
+Monthly
+
+Type
+
+Monthly
+Type
+Monthly
++ Add Other Cost
+Classroom & Operational Details
+Classrooms
+Capacity
+his Montry swudent
++ Add Classroom
+Operating Details
+Getaung Hours (oaiy)
+Cataung Uaya ght Tear
+Random Shock Simulations O
+a Save My Inputs
+8 Crosta Monthly Pro Forma
+U Simulase taghts.
+
+
+
+
++ Back Center Operations Simulator
+Simulate cash flow, budgating, statting, and financial ovants
+Ad Placcholder
+Inputs
+Operational & Financial Data Entry
+Tanults altar simulation
+Next Stup
+coulzad chacklut altur sevin
+Simulation Results & Key Performance Indicators
+Net Monthly Income
+SO
+Your prosciod rat incoere is soyment.
+Break-Even Enrollment
+0 students
+largest Expense
+0%
+Capacity Utilization
+0%
+o or 0 spoks talod
+Executive Summary
+l Financial Overview: Your center generates $0 in manthly revenue with $0 in expenses, resulting in a net income of $0.
+&. Profitability Concern: Your center is operating at a loss. Focus on increasing enrollment or reducing expenses to reach break-even.
+21 Enrollment Status: With 0 current students and capacity for 0, you have 0 spots available to boost revenue.
+® Export Budget/Pro Forma (CSV)
+$ Dounload POF Report
+Next Steps →
+
+
+
+Center Operations Simulator
+smulte cish w, Dcogc0rg, shting ana Tarchee cante
+Ad Placcholder
+simulator banner
+Operational a rantd Data Entry
+Ranuts atter simulator.
+nean red chercit atter trait
+Based an your simulation results, here are targeted recommendations to improve your center's performance)
+Your Progress
+ot 0 complosed
+Excellent Performance!
+Your center simulation shaws strong Tinancial Nealth with no amnedite schion items. Keep monitong your metrics and consider growtn apportunities.
+Explore KidsQueue Tools
+custom conutation
+Thint ton ton

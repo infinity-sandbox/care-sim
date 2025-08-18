@@ -61,7 +61,7 @@ const Login: React.FC = () => {
         sessionStorage.setItem('sessionId', sessionId); // Store the session ID in session storage
         
         message.success('Login successful');
-        navigate('/chatbot');
+        navigate('/simulator');
     })
     .catch(err => {
         message.error("Invalid credentials");

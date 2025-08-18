@@ -9,7 +9,7 @@ from pydantic import BaseModel, EmailStr, ValidationError
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_
 from typing import Optional, Union, Any
-from app.core.config import logger_settings, load_settings_from_db
+from app.core.config import logger_settings
 logger = logger_settings.get_logger(__name__)
 from app.schemas.client_schema import (UserOut,
                                        RegisterSchema, 
@@ -31,6 +31,10 @@ from sqlalchemy.future import select
 # Register and Login Endpoints
 auth_router = APIRouter()
 
+########################################
+##.           login endpoint
+########################################
+
 @auth_router.post("/login", response_model=TokenSchema)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)):
     try:
@@ -43,11 +47,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: aiomysql.C
             )
             user = await cursor.fetchone()  # Fetch the first matching user
         
-        # if not user or not await verify_password(form_data.password, user['password']):
-        #     raise HTTPException(status_code=400, detail="Invalid credentials")
-        
-        if not user:
+        #TODO: uncomment this since it needs password verification
+        if not user or (not await verify_password(form_data.password, user['password'])):
+            logger.error("Invalid credentials provided for login.")
             raise HTTPException(status_code=400, detail="Invalid credentials")
+        
+        # if not user:
+        #     raise HTTPException(status_code=400, detail="Invalid credentials")
 
         # Return tokens if credentials are correct
         return {
@@ -60,6 +66,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: aiomysql.C
     finally:
         db.close()  # Close the connection after the operation
     
+########################################
+##.         register endpoint
+########################################
+
 @auth_router.post("/register", response_model=dict)
 async def register(user: RegisterSchema, db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)):
     try:
@@ -91,6 +101,10 @@ async def register(user: RegisterSchema, db: aiomysql.Connection = Depends(AuthD
     finally:
         db.close()
         
+########################################
+##.          refresh endpoint
+########################################
+
 @auth_router.post("/refresh", response_model=TokenSchema)
 async def refresh_token(refresh_token: str = Body(...), db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)):
     try:
@@ -122,10 +136,10 @@ async def refresh_token(refresh_token: str = Body(...), db: aiomysql.Connection 
     
     finally:
         db.close()
-        
-@auth_router.post('/test-token', summary="Test if the access token is valid", response_model=UserOut)
-async def test_token(user: User = Depends(get_current_user)):
-    return user
+
+########################################
+##.        reset-email endpoint
+########################################
 
 @auth_router.post('/reset/email', summary="Send email for password reset", response_model=PasswordResetRequest)
 async def reset_password_email(request: PasswordResetRequest, db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)):
@@ -133,7 +147,7 @@ async def reset_password_email(request: PasswordResetRequest, db: aiomysql.Conne
         # Use aiomysql to fetch the user by email
         async with db.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute(
-                "SELECT * FROM auth_users WHERE email = %s", 
+                "SELECT * FROM auth_users WHERE email = %s",
                 (request.email,)
             )
             user = await cursor.fetchone()
@@ -166,7 +180,11 @@ async def reset_password_email(request: PasswordResetRequest, db: aiomysql.Conne
     
     finally:
         db.close()
-        
+
+########################################
+##.      reset password endpoint
+########################################
+
 @auth_router.post("/reset/password", summary="Reset password")
 async def reset_password_confirm(request: PasswordResetConfirm, db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)):
     try:

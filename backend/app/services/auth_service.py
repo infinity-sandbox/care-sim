@@ -6,6 +6,7 @@ import aiomysql
 load_dotenv()
 from typing import Optional, List, Dict, Tuple
 from datetime import datetime
+from app.core.config import logger_settings
 
 class AuthDatabaseService:
     @staticmethod
@@ -19,13 +20,13 @@ class AuthDatabaseService:
         try:
             # Initial connection without specifying a database
             initial_connection = await aiomysql.connect(
-                host=os.getenv("AUTH_DB_HOST"),
-                user=os.getenv("AUTH_DB_USER"),
-                password=os.getenv("AUTH_DB_PASSWORD"),
-                port=int(os.getenv("AUTH_DB_PORT", 3306))
+                host=logger_settings.AUTH_DB_HOST,
+                user=logger_settings.AUTH_DB_USER,
+                password=logger_settings.AUTH_DB_PASSWORD,
+                port=int(logger_settings.AUTH_DB_PORT)
             )
 
-            db_name = os.getenv("AUTH_DB")
+            db_name = logger_settings.AUTH_DB
             async with initial_connection.cursor() as cursor:
                 # Check if the database exists
                 await cursor.execute(f"SHOW DATABASES LIKE '{db_name}'")
@@ -42,11 +43,11 @@ class AuthDatabaseService:
 
             # Reconnect to the specified database
             connection = await aiomysql.connect(
-                host=os.getenv("AUTH_DB_HOST"),
-                user=os.getenv("AUTH_DB_USER"),
-                password=os.getenv("AUTH_DB_PASSWORD"),
+                host=logger_settings.AUTH_DB_HOST,
+                user=logger_settings.AUTH_DB_USER,
+                password=logger_settings.AUTH_DB_PASSWORD,
                 db=db_name,
-                port=int(os.getenv("AUTH_DB_PORT", 3306))
+                port=int(logger_settings.AUTH_DB_PORT)
             )
             return connection
 
@@ -96,47 +97,57 @@ class AuthDatabaseService:
         connection.close()
     
     @staticmethod
-    async def ensure_env_table_exists():
+    async def ensure_user_input_insight_tables_exists():
         """
-        Checks if the `env_auth` table exists and creates it if it doesn't exist.
+        Checks if the `user-input` table exists and creates it if it doesn't exist.
+        """
+        create_table_query = [
+            """-- Table for storing the raw input data you send to the model
+            CREATE TABLE IF NOT EXISTS input_data (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_email VARCHAR(255) NOT NULL,
+                data JSON,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );""",
+            
+            """-- Table for storing the insights JSON you get back
+            CREATE TABLE IF NOT EXISTS insights_data (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_email VARCHAR(255) NOT NULL,
+                data JSON,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );"""  
+        ]
+
+        try:
+            connection = await AuthDatabaseService.connection()
+            async with connection.cursor() as cursor:
+                for query in create_table_query:
+                    await cursor.execute(query)
+                await connection.commit()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error ensuring table exists: {e}")
+        finally:
+            connection.close()
+
+    @staticmethod
+    async def ensure_auth_table_exists():
+        """
+        Checks if the `auth` table exists and creates it if it doesn't exist.
         """
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS env_auth (
+        CREATE TABLE IF NOT EXISTS auth_users (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            email VARCHAR(50) UNIQUE NOT NULL,
-            DB_MS VARCHAR(100),
-            DB_USER VARCHAR(100),
-            DB_PASSWORD VARCHAR(100),
-            DB_HOST VARCHAR(100),
-            DB_PORT INT,
-            DB VARCHAR(100),
-            DB_TABLES JSON,
-            DB_DRIVER VARCHAR(100),
-            MODEL VARCHAR(500),
-            OPENAI_API_KEY VARCHAR(1000),
-            WEAVIATE_URL VARCHAR(1000),
-            WEAVIATE_API_KEY VARCHAR(1000),
-            REDIS_HOST VARCHAR(1000),
-            REDIS_PORT INT,
-            MY_EMAIL VARCHAR(500),
-            MY_EMAIL_PASSWORD VARCHAR(500),
-            EMAIL_APP_PASSWORD VARCHAR(500),
-            FRONTEND_API_URL VARCHAR(500),
-            BACKEND_API_URL VARCHAR(500),
-            REQUESTS_PER_WINDOW INT,
-            TIME_WINDOW INT,
-            ALLOWED_HTTP_REQUEST_METHODS JSON,
-            RESTRICTED_HTTP_REQUEST_METHODS JSON,
-            CRITICAL_RESTRICTED_HTTP_REQUEST_METHODS JSON,
-            BACKEND_CORS_ORIGINS JSON,
-            ACCESS_TOKEN_EXPIRE_MINUTES INT,
-            REFRESH_TOKEN_EXPIRE_MINUTES INT,
-            ALGORITHM VARCHAR(100),
-            JWT_SECRET_KEY VARCHAR(1000),
-            JWT_REFRESH_SECRET_KEY VARCHAR(1000)
+            username VARCHAR(50) UNIQUE NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL,
+            password VARCHAR(100) NOT NULL,
+            phone_number VARCHAR(15),
+            address VARCHAR(255),
+            security_question VARCHAR(255),
+            security_answer VARCHAR(255)
         );
         """
-
+        
         try:
             connection = await AuthDatabaseService.connection()
             async with connection.cursor() as cursor:
@@ -146,7 +157,7 @@ class AuthDatabaseService:
             raise HTTPException(status_code=500, detail=f"Error ensuring table exists: {e}")
         finally:
             connection.close()
-
+            
     @staticmethod
     async def retrieve_cache_history(userId: str, sessionId: str) -> Optional[List[Dict]]:
         """

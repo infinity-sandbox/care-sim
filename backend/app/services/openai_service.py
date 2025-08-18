@@ -1,6 +1,7 @@
 from typing import Optional
 from openai import OpenAI
 import openai
+from openai import OpenAI
 from pydub import AudioSegment
 import subprocess
 from app.core.config import logger_settings, Settings

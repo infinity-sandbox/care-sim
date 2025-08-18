@@ -21,7 +21,7 @@ const Sidebar: React.FC = () => {
     <div className="sidebar">
       <img src={logo} alt="Logo" className="sidebar-icon" />
       <div className="nav-links">
-        {/* <Link to="/home" className="nav-link">Home</Link> */}
+        <Link to="/home" className="nav-link">Home</Link>
         <Link to="/chatbot" className="nav-link">Genie</Link>
         {/* <Link to="/dashboard" className="nav-link">Dashboard</Link> */}
         {/* <Link to="#" className="nav-link">Genie Whisper</Link> */}

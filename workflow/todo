@@ -1,31 +1,11 @@
 ###############
-Generic Plan
-###############
-
-- login page (forgot password, reset password)
-- registration page
-- landing page to select from multiple choices (hidden side bar-logout,...)
-- one selection is to get insight from llm day-care & other services products
-- steps by step information drowpdown process & text field & upload file
-    (there should be save button & next button)
-    (the selection should be stored on a database with the user-id from the login)
-- After all inputs are filled there should be a button called generate insight
-- insight page will load and produce nice dashboard like insight page 
-    (paragraphs, images, tables---json->which can be used to draw dashboard)---try to thing of fixed out put by    
-    understanding what can be generated from all the input data, plus you can add generic paragraphs
-    output---which is a text file and nothing to worry to present it.
-
-
-###############
 Frontend Task
 ###############
 
-- login page --- forgot password --- reset password
-- registration page
-- landing page to select from multiple choices
-- hidden side bar---logout, ...
-- from the landing page, one selection is to get insight from llm day-care & include 
-other services products (disabled)
+- login page --- forgot password --- reset password @done
+- registration page @done
+- landing page that welcoms using username and describes the application (just saying go to form page)
+- icon at the right cornor of the page, will ve logout)
 - steps by step information drowpdown process & text field & upload file
 (there should be save button & next button)
 (the selection should be stored on a database with the user-id from the login)
@@ -34,24 +14,31 @@ other services products (disabled)
 tables---json->which can be used to draw dashboard)---try to think of fixed out put by
 understanding what can be generated from all the input data, plus you can add generic paragraphs
 output---which is a text file and nothing to worry to present it.
+at the bottom of the insight page ... 3 buttons:
+            - save insight as pdf/Download pdf report
+            - send insight to email
 
 
 ###############
 Backend Task
 ###############
 
-- login api-endpoint
-- forgot password api-endpoint
-- reset password api-endpoint
-- security (refresh token, access token)
+- login api-endpoint @done
+- forgot password api-endpoint @done
+- reset password api-endpoint @done
+- security (refresh token, access token) @done
 - main data input page---'put' data api-endpoint---save(should be in the fe not be), edit, write
     datatypes--->input==text, pdf, drowpdown (text)
 - insight api-endpoint --- dashboard data
     datatypes--->input above main data input page
-             --->output==json(for graphs), text & 
+             --->output==json(for graphs), text(include the text in the json response) & 
                 send insight to an email as pdf or md or text (with its own format)
 
 Others:
 - rate limit by ip-address
 - cacheing
+
+Other 2 additional endpoints:
+- save insight as pdf/Download pdf report
+- send insight to email
 

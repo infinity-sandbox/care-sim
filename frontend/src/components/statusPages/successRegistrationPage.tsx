@@ -11,7 +11,7 @@ const SuccessRegistrationPage: React.FC = () => {
       <Result
         icon={<CheckCircleOutlined style={{ color: '#1591ea', fontSize: '48px' }} />}
         title="You are successfully registered!"
-        subTitle="For the Applicare AI."
+        subTitle="Please log in to your account"
         extra={
           <Button className='success-login-button' type="primary" onClick={() => navigate('/login')}>
             Go to Login

@@ -31,24 +31,24 @@ def print_setup_info(name):
 check_required_files()
 
 # Setup configuration
-name = "applicare-ai"
+name = "care-sim"
 print_setup_info(name)
 
 # Setup configuration
 setup(
-    name="applicare-ai",
+    name="care-sim",
     version="0.0.1",
     packages=find_packages(),
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "applicare-ai = utils.cli.cli:cli",
+            "care-sim = utils.cli.cli:cli",
         ]
     },
-    author="applicare-ai",
-    author_email="noreplay@applicare-ai.com",
-    description="welcome to applicare-ai",
-    url='https://bitbucket.org/arcturusinternal/applicare_ai',
+    author="care-sim",
+    author_email="noreplay@care-sim.com",
+    description="welcome to care-sim",
+    url='https://github.com/infinity-sandbox/care-sim.git',
     long_description=read_file("readme.md"),
     long_description_content_type="text/markdown",
     python_requires='>=3.6, <3.13',
@@ -74,7 +74,7 @@ setup(
         "test": ["pytest-cov"],
     },
     dependency_links=[
-        "git+ssh://git@github.com/infinity-sandbox/predictive-monitoring.git@14c737c247f36e3"
-        "264deea5c4b9e0b0b940d17ba#egg=applicare_ai&subdirectory=server"
+        "git+ssh://git@github.com/infinity-sandbox/care-sim.git@14c737c247f36e3"
+        "264deea5c4b9e0b0b940d17ba#egg=care-sim&subdirectory=server"
     ]
 )
