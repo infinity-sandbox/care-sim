@@ -13,6 +13,11 @@ export interface ExpenseItem {
   type: string;
 }
 
+// Create a specific interface for employee expenses
+export interface EmployeeExpense extends ExpenseItem {
+  hoursPerMonth: number | null;
+}
+
 export interface Classroom {
   id: string;
   name: string;

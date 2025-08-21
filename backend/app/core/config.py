@@ -36,17 +36,7 @@ class Settings(BaseModel):
     EMAIL_APP_PASSWORD: str = config("EMAIL_APP_PASSWORD", cast=str)
     OPENAI_API_KEY: str = config("OPENAI_API_KEY", cast=str)
     MODEL: str = config("MODEL", cast=str)
-    #    
-    DB_MS: str = config("DB_MS", cast=str)
-    DB_USER: str = config("DB_USER", cast=str)
-    DB_PASSWORD: str = config("DB_PASSWORD", cast=str)
-    DB_HOST: str = config("DB_HOST", cast=str)
-    DB_PORT: int = config("DB_PORT", cast=int)
-    DB: str = config("DB", cast=str)
-    DB_TABLES: List[str] = [key.strip() for key in config("DB_TABLES").split(',')]
     #
-    # WEAVIATE_URL: str = config("WEAVIATE_URL", cast=str)
-    # WEAVIATE_API_KEY: str = config("WEAVIATE_API_KEY", cast=str)
     AUTH_DB_HOST: str = config("AUTH_DB_HOST", cast=str)
     AUTH_DB_PORT: str = config("AUTH_DB_PORT", cast=str)
     AUTH_DB_USER: str = config("AUTH_DB_USER", cast=str)
@@ -68,7 +58,7 @@ class Settings(BaseModel):
         """Return a logger instance for the specified module name."""
         return logger_config(module=module_name)
     
-    REDIS_HOST: str = "localhost" # change to `redis` when in docker
+    REDIS_HOST: str = "redis" # change to `redis` when in docker
     REDIS_PORT: int = 6379
     REQUESTS_PER_WINDOW: int = 30  # Max requests allowed in the time window
     TIME_WINDOW: int = 60  # Time window in seconds (e.g., 60 seconds or minute)

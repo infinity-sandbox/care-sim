@@ -19,7 +19,7 @@ const DaycareSimulator: React.FC = () => {
       case 2: return <InsightsDashboard />;
       case 3: return <NextSteps />;
       case 4: return <ProFormaDashboard />;
-      default: return <WelcomeScreen />;
+      default: return <InsightsDashboard />;
     }
   };
 

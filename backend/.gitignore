@@ -21,6 +21,7 @@ server/test_
 report_*
 test_/
 develop-eggs/
+backend/load_test/*
 app/prompts/tx/template/*.txt
 # dist/
 downloads/

@@ -9,7 +9,7 @@ services:
     expose:
       - 3000
     env_file:
-      - ./.env  # Make sure the .env file is correctly referenced
+      - ./.env
     ports:
       - "3000:3000"
     networks:

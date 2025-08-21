@@ -8,13 +8,16 @@ import {
   Typography,
   message,
   Input,
-  InputNumber
+  InputNumber,
+  Form,
+  Select
 } from 'antd';
 import { 
   RevenueSource, 
   ExpenseItem, 
   Classroom, 
-  BusinessGoal 
+  BusinessGoal, 
+  EmployeeExpense
 } from '../../types/simulatorTypes';
 import { useSimulatorContext } from '../../contexts/SimulatorContext';
 import { 
@@ -28,6 +31,7 @@ import {
 import UserAvatar from './UserAvatar';
 import { saveFormData, uploadFile } from '../../services/api';
 import { generateInsights } from '../../services/api';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const { Step } = Steps;
 const { Title } = Typography;
@@ -42,7 +46,10 @@ const InputForm: React.FC = () => {
     setInsights
   } = useSimulatorContext();
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [, setFileLoading] = useState(false);
+  const { Option } = Select;
 
   // Handlers for revenue sources
   const handleRevenueChange = (id: string, field: keyof RevenueSource, value: any) => {
@@ -163,40 +170,41 @@ const InputForm: React.FC = () => {
     }
   };
 
-  // File upload handler
-  const handleFileUpload = async (file: File) => {
-    setFileLoading(true);
-    try {
-      await uploadFile(file);
-      setFormData(prev => ({ ...prev, uploadedFile: file }));
-      message.success('File uploaded successfully');
-    } catch (error) {
-      message.error('File upload failed');
-    } finally {
-      setFileLoading(false);
-    }
-  };
+  // // File upload handler
+  // const handleFileUpload = async (file: File) => {
+  //   setFileLoading(true);
+  //   try {
+  //     await uploadFile(file);
+  //     setFormData(prev => ({ ...prev, uploadedFile: file }));
+  //     message.success('File uploaded successfully');
+  //   } catch (error) {
+  //     message.error('File upload failed');
+  //   } finally {
+  //     setFileLoading(false);
+  //   }
+  // };
 
-  const handleFileRemove = () => {
-    setFormData(prev => ({ ...prev, uploadedFile: null }));
-  };
+  // const handleFileRemove = () => {
+  //   setFormData(prev => ({ ...prev, uploadedFile: null }));
+  // };
 
   // Save form data
   const handleSave = async () => {
-    setLoading(true);
+    // setLoading(true);
+    setSaving(true);
     try {
       await saveFormData(formData);
       message.success('Data saved successfully');
     } catch (error) {
       message.error('Failed to save data');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   // Generate insights
   const handleGenerateInsights = async () => {
-    setLoading(true);
+    setGenerating(true);
     try {
       await saveFormData(formData);  // <-- pass in the current form data
       const insights = await generateInsights(formData);
@@ -205,7 +213,7 @@ const InputForm: React.FC = () => {
     } catch (error) {
       message.error('Failed to generate insights');
     } finally {
-      setLoading(false);
+      setGenerating(false);
     }
   };
 
@@ -227,7 +235,7 @@ const InputForm: React.FC = () => {
 
       <Card className="simulator-card">
         <Steps current={currentStep - 1} className="simulator-steps">
-          <Step title="Inputs" description="Operational & Financial Data" />
+          <Step title="Inputs" description="Financial Data" />
           <Step title="Insights" description="Simulation Results" />
           <Step title="Next Steps" description="Action Plan" />
         </Steps>
@@ -243,11 +251,13 @@ const InputForm: React.FC = () => {
           >
             <Row gutter={16}>
               <Col span={24}>
-                <Input
-                  placeholder="Business Name (e.g., Demo Daycare Center)"
-                  value={formData.businessName}
-                  onChange={e => setFormData({...formData, businessName: e.target.value})}
-                />
+                <Form.Item label="Business Name" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                  <Input
+                    placeholder="e.g. Demo Daycare Center"
+                    value={formData.businessName}
+                    onChange={e => setFormData({...formData, businessName: e.target.value})}
+                  />
+                </Form.Item>
               </Col>
             </Row>
           </FormSection>
@@ -275,6 +285,7 @@ const InputForm: React.FC = () => {
               onChange={(id, field, value) => handleExpenseChange('employees', id, field, value)}
               onRemove={(id) => removeExpenseItem('employees', id)}
               showHours={true}
+              category="employees"
             />
 
             <h4 style={{ marginTop: '24px' }}>Facilities</h4>
@@ -283,6 +294,7 @@ const InputForm: React.FC = () => {
               onAdd={() => addExpenseItem('facilities')}
               onChange={(id, field, value) => handleExpenseChange('facilities', id, field, value)}
               onRemove={(id) => removeExpenseItem('facilities', id)}
+              category="facilities"
             />
 
             <h4 style={{ marginTop: '24px' }}>Administrative</h4>
@@ -291,6 +303,7 @@ const InputForm: React.FC = () => {
               onAdd={() => addExpenseItem('administrative')}
               onChange={(id, field, value) => handleExpenseChange('administrative', id, field, value)}
               onRemove={(id) => removeExpenseItem('administrative', id)}
+              category="administrative"
             />
 
             <h4 style={{ marginTop: '24px' }}>Supplies</h4>
@@ -299,6 +312,7 @@ const InputForm: React.FC = () => {
               onAdd={() => addExpenseItem('supplies')}
               onChange={(id, field, value) => handleExpenseChange('supplies', id, field, value)}
               onRemove={(id) => removeExpenseItem('supplies', id)}
+              category="supplies"
             />
           </FormSection>
 
@@ -316,26 +330,30 @@ const InputForm: React.FC = () => {
             <h4 style={{ marginTop: '24px' }}>Operating Details</h4>
             <Row gutter={16}>
               <Col span={12}>
-                <InputNumber
-                  style={{ width: '100%' }}
-                  placeholder="Operating Hours (daily)"
-                  value={formData.operatingHours}
-                  onChange={value => setFormData({...formData, operatingHours: value || 0})}
-                  min={0}
-                  max={24}
-                  addonAfter="hours"
-                />
+                <Form.Item label="Operating Hours (daily)" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    placeholder="0"
+                    value={formData.operatingHours}
+                    onChange={value => setFormData({...formData, operatingHours: value || 0})}
+                    min={0}
+                    max={24}
+                    addonAfter="hours"
+                  />
+                </Form.Item>
               </Col>
               <Col span={12}>
-                <InputNumber
-                  style={{ width: '100%' }}
-                  placeholder="Operating Days per Year"
-                  value={formData.operatingDays}
-                  onChange={value => setFormData({...formData, operatingDays: value || 0})}
-                  min={0}
-                  max={365}
-                  addonAfter="days"
-                />
+                <Form.Item label="Operating Days per Year" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    placeholder="0"
+                    value={formData.operatingDays}
+                    onChange={value => setFormData({...formData, operatingDays: value || 0})}
+                    min={0}
+                    max={365}
+                    addonAfter="days"
+                  />
+                </Form.Item>
               </Col>
             </Row>
           </FormSection>
@@ -362,7 +380,7 @@ const InputForm: React.FC = () => {
             </Button>
             <Button 
               type="primary" 
-              loading={loading}
+              loading={saving}
               onClick={handleSave}
               style={{ marginRight: '16px', background: '#52c41a', borderColor: '#52c41a' }}
             >
@@ -370,8 +388,9 @@ const InputForm: React.FC = () => {
             </Button>
             <Button 
               type="primary" 
-              loading={loading}
+              loading={generating}
               onClick={handleGenerateInsights}
+              style={{ marginRight: '16px' }}
             >
               Generate Insights
             </Button>

@@ -25,22 +25,10 @@ services:
       - "8000:8000"
     environment:
       - REDIS_HOST=redis     
-      - REDIS_PORT=6379   
-      # TODO: uncomment the following line if you are using docker plus auth db is localhost
-      # - AUTH_DB_HOST=host.docker.internal  
+      - REDIS_PORT=6379
+      # - AUTH_DB_HOST=host.docker.internal  # TODO: uncomment if used docker
     networks:
       - backend_network
-
-  # sphinx-docs:
-  #   container_name: sphinx-docs
-  #   build:
-  #     context: ./
-  #     dockerfile: dockerfile.sphinx
-  #   image: sphinx-docs:latest
-  #   ports:
-  #     - "8080:8080"
-  #   expose:
-  #     - 8080
 
 networks:
   backend_network:

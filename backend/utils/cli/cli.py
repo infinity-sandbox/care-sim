@@ -4,7 +4,6 @@ import uvicorn
 from utils.docker.util import is_docker
 from app.core.config import logger_settings
 logger = logger_settings.get_logger(__name__)
-from utils.cli.cli_weaviate import init
 
 @click.group()
 @click.version_option(version="0.0.1")  # Specify the version of your application here
@@ -29,7 +28,4 @@ def start(uvreload: bool):
         logger.warning(f"uvicorn reloading: {uvreload}")
     else:
         logger.warning(f"uvicorn reloading: {uvreload}")   
-    # uvicorn.run("app.app:app", host="0.0.0.0", port=8000, reload=uvreload)
     uvicorn.run("app.app:app", host="0.0.0.0", port=8000)
-    
-cli.add_command(init, name="init")

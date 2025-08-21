@@ -8,7 +8,8 @@ import {
   Tooltip, 
   Select,
   Upload,
-  message 
+  message,
+  Form
 } from 'antd';
 import { 
   PlusOutlined, 
@@ -71,28 +72,50 @@ export const RevenueSources: React.FC<RevenueSourcesProps> = ({
     {sources.map((source) => (
       <Row gutter={16} key={source.id} className="form-row">
         <Col span={8}>
-          <Input
-            placeholder="Source Name"
-            value={source.sourceName}
-            onChange={(e) => onChange(source.id, 'sourceName', e.target.value)}
-          />
+          <Form.Item 
+          label="Source Name" 
+          labelCol={{ span: 24 }} 
+          wrapperCol={{ span: 24 }} 
+          rules={[{ 
+              required: true, 
+              message: 'Please input your expense source name!' 
+            }
+          ]}>
+            <Input
+              placeholder="e.g. Tuition"
+              value={source.sourceName}
+              onChange={(e) => onChange(source.id, 'sourceName', e.target.value)}
+            />
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="Monthly Amount"
-            value={source.monthlyAmount}
-            onChange={(value) => onChange(source.id, 'monthlyAmount', value)}
-            min={0}
-            addonBefore="$"
-          />
+          <Form.Item label="Monthly Amount ($)" 
+          labelCol={{ span: 24 }} 
+          wrapperCol={{ span: 24 }}
+          rules={[{ 
+              required: true, 
+              message: 'Please input your monthly amount!' 
+            }
+          ]}
+          >
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder="0"
+              value={source.monthlyAmount}
+              onChange={(value) => onChange(source.id, 'monthlyAmount', value)}
+              min={0}
+              addonBefore="$"
+            />
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <Input
-            placeholder="Tag/Note"
-            value={source.tag}
-            onChange={(e) => onChange(source.id, 'tag', e.target.value)}
-          />
+          <Form.Item label="Tag/Note" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <Input
+              placeholder="Tag/Note"
+              value={source.tag}
+              onChange={(e) => onChange(source.id, 'tag', e.target.value)}
+            />
+          </Form.Item>
         </Col>
         <Col span={4}>
           <Button 
@@ -123,77 +146,130 @@ interface ExpenseItemsProps {
   onChange: (id: string, field: keyof ExpenseItem, value: any) => void;
   onRemove: (id: string) => void;
   showHours?: boolean;
+  category?: string; // Add category to customize labels
 }
 
-export const ExpenseItems: React.FC<ExpenseItemsProps> = ({ 
+export const ExpenseItems: React.FC<ExpenseItemsProps> = ({
   expenses, 
   onAdd, 
   onChange, 
   onRemove,
-  showHours = false
-}) => (
-  <>
-    {expenses.map((expense) => (
-      <Row gutter={16} key={expense.id} className="form-row">
-        <Col span={showHours ? 6 : 8}>
-          <Input
-            placeholder="Expense Name"
-            value={expense.expenseName}
-            onChange={(e) => onChange(expense.id, 'expenseName', e.target.value)}
-          />
-        </Col>
-        {showHours && (
+  showHours = false,
+  category
+}) => {
+  // Get appropriate labels based on category
+  const getLabels = () => {
+    switch(category) {
+      case 'employees':
+        return {
+          expenseName: 'Role/Position',
+          hoursPerMonth: 'Hours/Month',
+          monthlyAmount: 'Monthly Amount ($)',
+          type: 'Billing Frequency'
+        };
+      case 'facilities':
+        return {
+          expenseName: 'Facility Item',
+          monthlyAmount: 'Monthly Amount ($)',
+          type: 'Billing Frequency'
+        };
+      case 'administrative':
+        return {
+          expenseName: 'Administrative Item',
+          monthlyAmount: 'Monthly Amount ($)',
+          type: 'Billing Frequency'
+        };
+      case 'supplies':
+        return {
+          expenseName: 'Supply Item',
+          monthlyAmount: 'Monthly Amount ($)',
+          type: 'Billing Frequency'
+        };
+      default:
+        return {
+          expenseName: 'Expense Name',
+          monthlyAmount: 'Monthly Amount ($)',
+          type: 'Type'
+        };
+    }
+  };
+
+  const labels = getLabels();
+
+  return (
+    <>
+      {expenses.map((expense) => (
+        <Row gutter={16} key={expense.id} className="form-row">
+          <Col span={showHours ? 6 : 8}>
+            <Form.Item label={labels.expenseName} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+              <Input
+                placeholder={category === 'employees' ? 'e.g. Teacher' : 'e.g. Rent'}
+                value={expense.expenseName}
+                onChange={(e) => onChange(expense.id, 'expenseName', e.target.value)}
+              />
+            </Form.Item>
+          </Col>
+          {showHours && (
+            <Col span={6}>
+              <Form.Item label={labels.hoursPerMonth} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                <InputNumber
+                  style={{ width: '100%' }}
+                  placeholder="0"
+                  value={expense.hoursPerMonth}
+                  onChange={(value) => onChange(expense.id, 'hoursPerMonth', value)}
+                  min={0}
+                />
+              </Form.Item>
+            </Col>
+          )}
           <Col span={6}>
-            <InputNumber
-              style={{ width: '100%' }}
-              placeholder="Hours/Month"
-              value={expense.hoursPerMonth}
-              onChange={(value) => onChange(expense.id, 'hoursPerMonth', value)}
-              min={0}
+            <Form.Item label={labels.monthlyAmount} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+              <InputNumber
+                style={{ width: '100%' }}
+                placeholder="0.00"
+                value={expense.monthlyAmount}
+                onChange={(value) => onChange(expense.id, 'monthlyAmount', value)}
+                min={0}
+                // formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                // parser={value => value ? parseFloat(value.replace(/\$\s?|(,*)/g, '')) : 0}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item label={labels.type} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+              <Select
+                style={{ width: '100%' }}
+                value={expense.type}
+                onChange={(value) => onChange(expense.id, 'type', value)}
+              >
+                <Option value="Monthly">Monthly</Option>
+                <Option value="Hourly">Hourly</Option>
+                <Option value="Daily">Daily</Option>
+                <Option value="Yearly">Yearly</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={2}>
+            <Button 
+              danger 
+              icon={<MinusOutlined />} 
+              onClick={() => onRemove(expense.id)}
+              style={{ marginTop: '30px' }}
             />
           </Col>
-        )}
-        <Col span={6}>
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="Monthly Amount"
-            value={expense.monthlyAmount}
-            onChange={(value) => onChange(expense.id, 'monthlyAmount', value)}
-            min={0}
-            addonBefore="$"
-          />
-        </Col>
-        <Col span={6}>
-          <Select
-            style={{ width: '100%' }}
-            value={expense.type}
-            onChange={(value) => onChange(expense.id, 'type', value)}
-          >
-            <Option value="Monthly">Monthly</Option>
-            <Option value="Hourly">Hourly</Option>
-            <Option value="Daily">Daily</Option>
-            <Option value="Yearly">Yearly</Option>
-          </Select>
-        </Col>
-        <Col span={2}>
-          <Button 
-            danger 
-            icon={<MinusOutlined />} 
-            onClick={() => onRemove(expense.id)}
-          />
-        </Col>
-      </Row>
-    ))}
-    <Button 
-      type="dashed" 
-      onClick={onAdd} 
-      icon={<PlusOutlined />}
-      className="add-button"
-    >
-      Add Expense
-    </Button>
-  </>
-);
+        </Row>
+      ))}
+      <Button 
+        type="dashed" 
+        onClick={onAdd} 
+        icon={<PlusOutlined />}
+        className="add-button"
+      >
+        Add {(category ? category.charAt(0).toUpperCase() + category.slice(1) : 'General')} Expense
+      </Button>
+    </>
+  );
+};
 
 interface ClassroomsProps {
   classrooms: Classroom[];
@@ -212,39 +288,47 @@ export const Classrooms: React.FC<ClassroomsProps> = ({
     {classrooms.map((classroom) => (
       <Row gutter={16} key={classroom.id} className="form-row">
         <Col span={6}>
-          <Input
-            placeholder="Classroom Name"
-            value={classroom.name}
-            onChange={(e) => onChange(classroom.id, 'name', e.target.value)}
-          />
+          <Form.Item label="Classroom Name" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <Input
+              placeholder="e.g. Toddler Room"
+              value={classroom.name}
+              onChange={(e) => onChange(classroom.id, 'name', e.target.value)}
+            />
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="Capacity"
-            value={classroom.capacity}
-            onChange={(value) => onChange(classroom.id, 'capacity', value)}
-            min={0}
-          />
+          <Form.Item label="Capacity" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder="0"
+              value={classroom.capacity}
+              onChange={(value) => onChange(classroom.id, 'capacity', value)}
+              min={0}
+            />
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="Teacher Ratio"
-            value={classroom.ratio}
-            onChange={(value) => onChange(classroom.id, 'ratio', value)}
-            min={0}
-            step={0.1}
-          />
+          <Form.Item label="Teacher Ratio" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder="0.0"
+              value={classroom.ratio}
+              onChange={(value) => onChange(classroom.id, 'ratio', value)}
+              min={0}
+              step={0.1}
+            />
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="Avg Students"
-            value={classroom.avgStudents}
-            onChange={(value) => onChange(classroom.id, 'avgStudents', value)}
-            min={0}
-          />
+          <Form.Item label="Avg Students" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder="0"
+              value={classroom.avgStudents}
+              onChange={(value) => onChange(classroom.id, 'avgStudents', value)}
+              min={0}
+            />
+          </Form.Item>
         </Col>
         <Col span={24} style={{ textAlign: 'right', marginTop: '8px' }}>
           <Button 
@@ -285,28 +369,32 @@ export const BusinessGoals: React.FC<BusinessGoalsProps> = ({
     {goals.map((goal) => (
       <Row gutter={16} key={goal.id} className="form-row">
         <Col span={16}>
-          <Input
-            placeholder="Business Goal"
-            value={goal.goal}
-            onChange={(e) => onChange(goal.id, 'goal', e.target.value)}
-          />
+          <Form.Item label="Business Goal" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <Input
+              placeholder="e.g., Increase Enrollment"
+              value={goal.goal}
+              onChange={(e) => onChange(goal.id, 'goal', e.target.value)}
+            />
+          </Form.Item>
         </Col>
         <Col span={6}>
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="Target %"
-            value={goal.targetPercentage}
-            onChange={(value) => onChange(goal.id, 'targetPercentage', value)}
-            min={0}
-            max={100}
-            addonAfter="%"
-          />
+          <Form.Item label="Target (%)" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder="0"
+              value={goal.targetPercentage}
+              onChange={(value) => onChange(goal.id, 'targetPercentage', value)}
+              min={0}
+              max={100}
+            />
+          </Form.Item>
         </Col>
         <Col span={2}>
           <Button 
             danger 
             icon={<MinusOutlined />} 
             onClick={() => onRemove(goal.id)}
+            style={{ marginTop: '30px' }}
           />
         </Col>
       </Row>

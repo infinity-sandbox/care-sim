@@ -5,9 +5,10 @@ import { logoutUser } from '../../services/api';
 
 interface UserAvatarProps {
   email: string;
+  username?: string;  // 👈 optional
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({ email }) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ email, username }) => {
   const [visible, setVisible] = useState(false);
   
   const handleLogout = async () => {
@@ -43,7 +44,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ email }) => {
           fontSize: '18px'
         }}
       >
-        {email.charAt(0).toUpperCase()}
+        {email ? email.charAt(0).toUpperCase() : "?"}
       </Avatar>
     </Dropdown>
   );

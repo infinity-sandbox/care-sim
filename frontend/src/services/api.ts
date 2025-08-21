@@ -274,10 +274,9 @@ export const logoutUser = () => {
   }
 };
 
-// TODO: Implement a function to get user data
-export const getUserData = async () => {
+export const getUserData = async (): Promise<{email: string, username?: string}> => {
   try {
-    const response = await axios.get<{email: string}>(`${API_URL}/user`);
+    const response = await api.get('/api/v1/insight/user');
     return response.data;
   } catch (error) {
     console.error('Error getting user data:', error);

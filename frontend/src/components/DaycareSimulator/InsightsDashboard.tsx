@@ -17,7 +17,8 @@ import {
   DownloadOutlined, 
   MailOutlined, 
   ArrowRightOutlined, 
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
+  ArrowLeftOutlined
 } from '@ant-design/icons';
 import { useSimulatorContext } from '../../contexts/SimulatorContext';
 import UserAvatar from './UserAvatar';
@@ -26,7 +27,7 @@ import { FileExcelOutlined, DashboardOutlined } from '@ant-design/icons';
 import { generateExcelReport, getProFormaDashboardData } from '../../services/api';
 
 const { Title, Text } = Typography;
-const { confirm } = Modal;
+// const { confirm } = Modal;
 
 
 
@@ -406,7 +407,14 @@ const InsightsDashboard: React.FC = () => {
                 block
               >
                 {loadingRecommendations ? 'Loading...' : 'View Personalized Action Plan'}
-              </Button>
+              </Button> 
+              <div className="action-buttons" style={{ marginTop: '24px' }}>
+                <Button 
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => setCurrentStep(1)}>
+                    Back to Inputs
+                </Button>
+              </div>
             </Card>
           </Col>
         </Row>

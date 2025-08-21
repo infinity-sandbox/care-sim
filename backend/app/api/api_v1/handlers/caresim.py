@@ -1193,4 +1193,33 @@ async def generate_pdf_report(
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error when generating PDF: {str(e)}")
-        
+      
+
+@insight_router.get("/user")
+async def get_insights(
+                    token_payload: dict = Depends(verify_token),
+                    db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)
+                    ):
+    try:
+        async with db.cursor(aiomysql.DictCursor) as cursor:
+            # Check if the user exists based on email
+            await cursor.execute(
+                "SELECT * FROM auth_users WHERE id = %s",
+                (token_payload.get("sub"),)
+            )
+        user = await cursor.fetchone()  # Fetch the first matching user
+        logger.debug(f"User: {user['email']}")
+        if not user:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid token: user ID not found"
+            )
+        return {
+                "email": user['email'], 
+                "username": user['username']
+                }
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_511_NETWORK_AUTHENTICATION_REQUIRED,
+            content={"status": "error", "message": f"Failed to know user: {e}"}
+        )
