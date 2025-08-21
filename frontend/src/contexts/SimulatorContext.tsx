@@ -15,7 +15,8 @@ interface SimulatorContextType {
   userEmail: string;
   recommendationsLoading: boolean;
   fetchRecommendations: () => Promise<void>;
-  
+  dashboardData: any;
+  setDashboardData: React.Dispatch<React.SetStateAction<any>>; // Add this
 }
 
 const defaultFormData: FormData = {
@@ -43,7 +44,9 @@ const defaultFormData: FormData = {
   operatingHours: 0,
   operatingDays: 0,
   goals: [
-    { id: '1', goal: 'Increase Enrollment', targetPercentage: 0 }
+    { id: '1', goal: 'Increase Revenue', targetPercentage: 0 },
+    { id: '2', goal: 'Reduce Expense', targetPercentage: 0 },
+    { id: '3', goal: 'Improve Classroom Utilization', targetPercentage: 0 }
   ]
 };
 
@@ -56,6 +59,7 @@ export const SimulatorProvider: React.FC<{children: ReactNode; email: string}> =
   const [recommendations, setRecommendations] = useState<Recommendations | null>(null);
   const [userEmail] = useState(email);
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState<any>(null); // Add this
 
   const fetchRecommendations = async () => {
     try {
@@ -87,6 +91,8 @@ export const SimulatorProvider: React.FC<{children: ReactNode; email: string}> =
       setInsights,
       recommendations,
       setRecommendations,
+      dashboardData,
+      setDashboardData,
       userEmail,
       fetchRecommendations,
       recommendationsLoading

@@ -9,25 +9,165 @@ import {
   Button,
   Alert,
   List,
-  Spin
+  Spin,
+  Modal,
+  message
 } from 'antd';
-import { DownloadOutlined, MailOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import {
+  DownloadOutlined, 
+  MailOutlined, 
+  ArrowRightOutlined, 
+  ExclamationCircleOutlined
+} from '@ant-design/icons';
 import { useSimulatorContext } from '../../contexts/SimulatorContext';
 import UserAvatar from './UserAvatar';
+import { generatePdfReport, sendEmailReport } from '../../services/api';
+import { FileExcelOutlined, DashboardOutlined } from '@ant-design/icons';
+import { generateExcelReport, getProFormaDashboardData } from '../../services/api';
 
 const { Title, Text } = Typography;
+const { confirm } = Modal;
+
+
 
 const InsightsDashboard: React.FC = () => {
   const {
     insights, 
     setCurrentStep,
     userEmail,
+    formData, // Make sure this is included
+    setDashboardData, // Make sure this is included
     fetchRecommendations
   } = useSimulatorContext();
 
    // Add this state to track if we're waiting for insights
   const [isLoading, setIsLoading] = useState(!insights);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+
+  // Add these state variables
+  const [excelLoading, setExcelLoading] = useState(false);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
+
+  // Add these handler functions
+  const handleGenerateExcel = async () => {
+    setExcelLoading(true);
+    try {
+      const excelBlob = await generateExcelReport();
+      
+      // Create a download link for the Excel file
+      const url = window.URL.createObjectURL(excelBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'daycare_budget_planner.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+      
+      message.success('Excel report downloaded successfully');
+    } catch (error: any) {
+      console.error('Excel generation failed:', error);
+      
+      Modal.error({
+        title: 'Excel Generation Failed',
+        content: error.response?.data?.detail || 'Failed to generate Excel report. Please try again.',
+        icon: <ExclamationCircleOutlined />,
+      });
+    } finally {
+      setExcelLoading(false);
+    }
+  };
+
+
+  // Update the handleViewDashboard function
+  const handleViewDashboard = async () => {
+    setDashboardLoading(true);
+    try {
+      // Fetch the dashboard data first
+      const dashboardData = await getProFormaDashboardData(formData);
+      console.log('Dashboard data received:', dashboardData);
+      
+      // Store the data in context
+      setDashboardData(dashboardData);
+      console.log('Data stored in context');
+      
+      // Navigate to the dashboard step
+      console.log('Navigating to step 4');
+      setCurrentStep(4);
+    } catch (error: any) {
+      console.error('Dashboard data fetch failed:', error);
+      
+      Modal.error({
+        title: 'Dashboard Load Failed',
+        content: error.response?.data?.detail || 'Failed to load dashboard data. Please try again.',
+        icon: <ExclamationCircleOutlined />,
+      });
+    } finally {
+      setDashboardLoading(false);
+    }
+  };
+
+  // Handle PDF generation
+  const handleGeneratePdf = async () => {
+    setPdfLoading(true);
+    try {
+      const pdfBlob = await generatePdfReport();
+      
+      // Create a download link for the PDF
+      const url = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'daycare-financial-report.pdf');
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+      
+      message.success('PDF report downloaded successfully');
+    } catch (error: any) {
+      console.error('PDF generation failed:', error);
+      
+      // Show error modal
+      Modal.error({
+        title: 'PDF Generation Failed',
+        content: error.response?.data?.detail || 'Failed to generate PDF report. Please try again.',
+        icon: <ExclamationCircleOutlined />,
+      });
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
+  // Handle email sending
+  const handleSendEmail = async () => {
+    setEmailLoading(true);
+    try {
+      const result = await sendEmailReport();
+      
+      if (result.status === 'success') {
+        message.success(result.message);
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error: any) {
+      console.error('Email sending failed:', error);
+      
+      // Show error modal
+      Modal.error({
+        title: 'Email Sending Failed',
+        content: error.response?.data?.message || 'Failed to send email report. Please try again.',
+        icon: <ExclamationCircleOutlined />,
+      });
+    } finally {
+      setEmailLoading(false);
+    }
+  };
 
   // Add this useEffect to handle the loading state
   useEffect(() => {
@@ -200,16 +340,50 @@ const InsightsDashboard: React.FC = () => {
               <Button 
                 type="primary" 
                 icon={<DownloadOutlined />} 
+                loading={pdfLoading}
+                onClick={handleGeneratePdf}
                 style={{ marginRight: '16px', marginBottom: '16px' }}
                 block
               >
                 Download PDF Report
               </Button>
+              <Button
+                type="primary" 
+                icon={<FileExcelOutlined />} 
+                loading={excelLoading}
+                onClick={handleGenerateExcel}
+                style={{ 
+                  marginRight: '16px', 
+                  marginBottom: '16px',
+                  backgroundColor: '#52c41a', // Green color
+                  borderColor: '#52c41a'      // Green border
+                }}
+                block
+              >
+                Export Budget/Pro Forma (Excel)
+              </Button>
               <Button 
                 icon={<MailOutlined />} 
+                loading={emailLoading}
+                onClick={handleSendEmail}
+                style={{ marginRight: '16px', marginBottom: '16px' }}
                 block
               >
                 Send Report to My Email
+              </Button>
+              <Button 
+                icon={<DashboardOutlined />} 
+                loading={dashboardLoading}
+                onClick={handleViewDashboard}
+                style={{ 
+                  marginRight: '16px', 
+                  marginBottom: '16px',
+                  backgroundColor: '#ff430fff', // Green color
+                  borderColor: '#ff430fff',     // Green border
+                }}
+                block
+              >
+                View Pro Forma Dashboard
               </Button>
             </Card>
           </Col>
@@ -217,15 +391,21 @@ const InsightsDashboard: React.FC = () => {
             <Card title="Next Steps">
               <Button 
                 type="primary" 
-                icon={<ArrowRightOutlined />} 
+                icon={<ArrowRightOutlined />}
                 onClick={async () => {
-                    // Fetch recommendations before navigating
-                    await fetchRecommendations();
-                    setCurrentStep(3)
+                    setLoadingRecommendations(true);
+                    try {
+                      await fetchRecommendations();
+                      setCurrentStep(3)
+                    } catch (error) {
+                        console.error('Failed to fetch recommendations:', error);
+                      } finally {
+                        setLoadingRecommendations(false);
+                      }
                 }}
                 block
               >
-                View Personalized Action Plan
+                {loadingRecommendations ? 'Loading...' : 'View Personalized Action Plan'}
               </Button>
             </Card>
           </Col>

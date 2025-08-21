@@ -42,7 +42,7 @@ const InputForm: React.FC = () => {
     setInsights
   } = useSimulatorContext();
   const [loading, setLoading] = useState(false);
-  const [fileLoading, setFileLoading] = useState(false);
+  const [, setFileLoading] = useState(false);
 
   // Handlers for revenue sources
   const handleRevenueChange = (id: string, field: keyof RevenueSource, value: any) => {
@@ -198,6 +198,7 @@ const InputForm: React.FC = () => {
   const handleGenerateInsights = async () => {
     setLoading(true);
     try {
+      await saveFormData(formData);  // <-- pass in the current form data
       const insights = await generateInsights(formData);
       setInsights(insights);  // Update this line
       setCurrentStep(2); // Move to insights page
@@ -350,18 +351,6 @@ const InputForm: React.FC = () => {
               onRemove={removeGoal}
             />
           </FormSection>
-
-          {/* <FormSection 
-            title="Additional Information" 
-            description="Upload documents to help AI make better decisions"
-          >
-            <p>Upload a PDF file with additional financial or operational information</p>
-            <FileUpload 
-              file={formData.uploadedFile || null}
-              onUpload={handleFileUpload}
-              onRemove={handleFileRemove}
-            />
-          </FormSection> */}
 
           <div className="form-actions">
             <Button 

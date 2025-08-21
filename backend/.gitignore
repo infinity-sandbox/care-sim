@@ -18,8 +18,10 @@ notebooks/
 build/
 test1/
 server/test_
+report_*
 test_/
 develop-eggs/
+app/prompts/tx/template/*.txt
 # dist/
 downloads/
 eggs/
