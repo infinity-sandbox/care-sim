@@ -5,7 +5,6 @@ from app.core.config import logger_settings
 from app.models.user_model import User
 from jose import jwt
 from pydantic import ValidationError
-from app.services.user_service import UserService
 from app.schemas.auth_schema import TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(

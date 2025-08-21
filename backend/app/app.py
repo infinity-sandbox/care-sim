@@ -8,7 +8,6 @@ from app.core.config import logger_settings, Settings
 logger = logger_settings.get_logger(__name__)
 import asyncio
 from app.models.user_model import User
-from app.models.env_model import AdminEnv
 from app.api.api_v1.router import router
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi import FastAPI

@@ -44,7 +44,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ email, username }) => {
           fontSize: '18px'
         }}
       >
-        {email ? email.charAt(0).toUpperCase() : "?"}
+        {email ? email.charAt(0).toUpperCase() : "d"}
       </Avatar>
     </Dropdown>
   );

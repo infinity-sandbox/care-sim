@@ -32,6 +32,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 import uuid
+from utils.vapor.engine.scheduler import start_scheduler
 
 insight_router = APIRouter()
 
@@ -239,6 +240,7 @@ async def get_insights(input_data: DaycareInput,
             db: aiomysql.Connection = Depends(AuthDatabaseService.get_db)):
     
     try:
+        await start_scheduler()
         async with db.cursor(aiomysql.DictCursor) as cursor:
             # Check if the user exists based on email
             await cursor.execute(
